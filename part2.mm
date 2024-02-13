@@ -12,6 +12,10 @@ void displayScore() {
     cout << "Your average is " << averageScore << endl;
 }
 
+void displayError() {
+    cout << "Cannot divide by zero." << endl;
+}
+
 int main() {
     cout << "Q2" << endl;
     _asm {
@@ -21,25 +25,26 @@ int main() {
     whileLoop:
         call askScoreData; // move call here due to while loop
         cmp score, -1;  // compare if score is equal to -1
-        je exitLoop; // if so exit
+        je calculateAverage; // if so exit
                            // else
         add scoreTotal, score; // add score to scoreTotal
         inc counter;// ++
 
         jmp whileLoop; // jump back to whileLoop
 
-    exitLoop:
-        // display
-        mov eax, scoreTotal; // eax = scoreTotal
-        cdq;// extend
-        idiv counter; // scoreTotal / counter
-        mov averageScore, eax; // averageScore = eax
-
-        mov ecx, averageScore; // store averageScore in ecx
-        mov averageScore, scoreTotal; // swap averageScore and scoreTotal
-
-        mov scoreTotal, ecx; // store the original averageScore in scoreTotal
-        call displayScore; // call on the void function displayScore
+        calculateAverage:
+        cmp counter, 0;
+        je displayError;
+        mov eax, scoreTotal;
+        cdq;
+        idiv counter;
+        mov averageScore, eax;
+        jmp display
+    displayError:
+    call displayError;
+    jmp done;
+    display:
+    call displayScore; // call on the void function displayScore
     }
 
     return 0;
