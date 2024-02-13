@@ -26,25 +26,33 @@ int main() {
         call askScoreData; // move call here due to while loop
         cmp score, -1;  // compare if score is equal to -1
         je calculateAverage; // if so exit
-                           // else
-        add scoreTotal, score; // add score to scoreTotal
-        inc counter;// ++
+                          // else
 
+        mov eax, score;
+        add eax, scoreTotal;
+        mov scoreTotal, eax;
+
+        inc counter;// ++
         jmp whileLoop; // jump back to whileLoop
 
-        calculateAverage:
+    calculateAverage:
         cmp counter, 0;
-        je displayError;
+        je errorHandeling;
+
         mov eax, scoreTotal;
         cdq;
         idiv counter;
         mov averageScore, eax;
-        jmp display
-    displayError:
-    call displayError;
+        jmp display;
+
+    errorHandeling:
+    call errorHandeling;
     jmp done;
+
     display:
     call displayScore; // call on the void function displayScore
+
+    done:
     }
 
     return 0;
